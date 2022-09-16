@@ -2,6 +2,8 @@
 #
 # Prepare our container for initial boot.
 
+echo "ServerName ${SERVER_NAME:-localhost}" >> /etc/apache2/apache2.conf
+
 # Where does our MySQL data live?
 VOLUME_HOME="/var/lib/mysql"
 
@@ -110,6 +112,9 @@ if [[ ! -d $VOLUME_HOME/mysql ]]; then
 else
     echo "=> Using an existing volume of MySQL"
 fi
+
+
+sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
 echo "Starting supervisord"
 exec supervisord -n
