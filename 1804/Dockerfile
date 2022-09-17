@@ -32,7 +32,7 @@ RUN add-apt-repository -y ppa:ondrej/php && \
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
   apt-get update && \
   apt-get -y upgrade && \
-  apt-get -y install nano imagemagick postfix python3-setuptools wget git apache2 php${PHP_VERSION}-xdebug libapache2-mod-php${PHP_VERSION} mysql-server php${PHP_VERSION}-mysql pwgen php${PHP_VERSION}-apcu php${PHP_VERSION}-gd php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring zip unzip php${PHP_VERSION}-zip curl php${PHP_VERSION}-curl  php${PHP_VERSION}-cli php${PHP_VERSION}-common php${PHP_VERSION}-mcrypt php${PHP_VERSION}-json php${PHP_VERSION}-tidy php${PHP_VERSION}-imagick php${PHP_VERSION}-bcmath php${PHP_VERSION}-gmp && \
+  apt-get -y install sudo nano imagemagick postfix python3-setuptools wget git apache2 php${PHP_VERSION}-xdebug libapache2-mod-php${PHP_VERSION} mysql-server php${PHP_VERSION}-mysql pwgen php${PHP_VERSION}-apcu php${PHP_VERSION}-gd php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring zip unzip php${PHP_VERSION}-zip curl php${PHP_VERSION}-curl  php${PHP_VERSION}-cli php${PHP_VERSION}-common php${PHP_VERSION}-mcrypt php${PHP_VERSION}-json php${PHP_VERSION}-tidy php${PHP_VERSION}-imagick php${PHP_VERSION}-bcmath php${PHP_VERSION}-gmp && \
   apt-get -y autoremove && \
   apt-get -y clean 
 
@@ -77,12 +77,19 @@ RUN a2enmod rewrite
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 ADD app/ /app
 
-#Environment variables to configure php
+# Environment variables to configure php
 ENV PHP_UPLOAD_MAX_FILESIZE 100M
 ENV PHP_POST_MAX_SIZE 100M
+
+# Add User
+# perl -e 'print crypt("pass", "salt"),"\n"'
+RUN useradd -m -p sa5JEXtYx/rm6 -s /bin/bash -U user && \ 
+    usermod -aG staff,www-data,sudo user && \
+    mkdir /home/user/.ssh && \
+    touch /home/user/.ssh/authorized_keys
 
 # Add volumes for the app and MySql
 VOLUME  ["/var/lib/mysql", "/app" ]
 
-EXPOSE 80 3306
+EXPOSE 80 3306 22
 CMD ["/run.sh"]

@@ -3,6 +3,10 @@
 # Prepare our container for initial boot.
 
 echo "ServerName ${SERVER_NAME:-localhost}" >> /etc/apache2/apache2.conf
+sed -i '/<Directory /,/<\/Directory>/d' /etc/apache2/apache2.conf
+
+echo "AllowGroups staff" >> /etc/ssh/sshd_config
+echo "Port 22" >> /etc/ssh/sshd_config
 
 # Where does our MySQL data live?
 VOLUME_HOME="/var/lib/mysql"
@@ -73,7 +77,7 @@ else
     echo "Allowing Apache/PHP to write to the app"
     # Tweaks to give Apache/PHP write permissions to the app
     chown -R www-data:staff /var/www
-    chown -R www-data:staff /app
+    # chown -R www-data:staff /app
 fi
 
 echo "Allowing Apache/PHP to write to MySQL"
