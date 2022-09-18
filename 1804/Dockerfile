@@ -83,13 +83,12 @@ ENV PHP_POST_MAX_SIZE 100M
 
 # Add User
 # perl -e 'print crypt("pass", "salt"),"\n"'
-RUN useradd -m -p sa5JEXtYx/rm6 -s /bin/bash -U user && \ 
-    usermod -aG staff,www-data,sudo user && \
-    mkdir /home/user/.ssh && \
-    touch /home/user/.ssh/authorized_keys
+RUN useradd -d /app -p sa5JEXtYx/rm6 -s /bin/bash -U user && \ 
+    usermod -aG staff,www-data,sudo user
 
 # Add volumes for the app and MySql
 VOLUME  ["/var/lib/mysql", "/app" ]
 
 EXPOSE 80 3306 22
+
 CMD ["/run.sh"]
